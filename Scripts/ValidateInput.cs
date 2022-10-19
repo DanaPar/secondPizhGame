@@ -29,6 +29,7 @@ public class ValidateInput : MonoBehaviour
             started = true;
             //Show window
             ToggleWindow(true);
+        inputfield.Select();
         
     }
     public void CheckInput()
@@ -36,7 +37,7 @@ public class ValidateInput : MonoBehaviour
        
 
         if (inputfield.text.ToUpper() == code)      // check inputfield contains the string password
-        {
+        {   
             Debug.Log("Password accepted");     // just a debug.Log to show that the password is correct (can be removed)
             ToggleWindow(false);
             dialogueScript.StartDialogue();

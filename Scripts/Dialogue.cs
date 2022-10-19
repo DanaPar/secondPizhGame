@@ -23,6 +23,16 @@ public class Dialogue : MonoBehaviour
     //wait for next boolean
     private bool waitForNext;
 
+    private bool isEnded;
+
+    public GameObject createTrigger;
+    public GameObject destroyTrigger;
+
+    private void Awake()
+    {
+        ToggleWindow(false);
+    }
+
     private void ToggleWindow(bool show)
     {
         window.SetActive(show);
@@ -32,14 +42,15 @@ public class Dialogue : MonoBehaviour
     public void StartDialogue()
     {
         if (started) return;
-
-
-        //boolean indicate that we have started
-        started = true;
-        //Show window
-        ToggleWindow(true);
-        //start with first dialogue
-        GetDialogue(0);
+        if (!isEnded)
+        {//boolean indicate that we have started
+            started = true;
+            //Show window
+            ToggleWindow(true);
+            //start with first dialogue
+            GetDialogue(0);
+        }   
+        
     }
 
     private void GetDialogue(int i)
@@ -56,13 +67,20 @@ public class Dialogue : MonoBehaviour
     //End dialogue
     public void EndDialogue()
     {
+        //started is disabled
+        started = false;
+        waitForNext = false;
+        StopAllCoroutines();
         //hide window
         ToggleWindow(false);
+        isEnded = true;
+        TriggerManager();
         
     }
     //Writing logic
     IEnumerator Writing()
     {
+        yield return new WaitForSeconds(writingSpeed);
         string currentDialogue = dialogues[index];
         //Write the character
         dialogueText.text += currentDialogue[charIndex];
@@ -103,5 +121,13 @@ public class Dialogue : MonoBehaviour
         }
     }
 
+    public void TriggerManager()
+    {
+        Collider2D newTrigger = createTrigger.GetComponent<Collider2D>();
+        Collider2D destroyableTrigger = destroyTrigger.GetComponent<Collider2D>();
+
+        newTrigger.isTrigger = true;
+        destroyableTrigger.isTrigger = false;
+    }
 
 }
